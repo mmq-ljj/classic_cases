@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .canvas {
+            border: 1px solid pink;
+        }
+    </style>
+</head>
+
+<body>
+    <audio id="music" src="https://attachment.cnbkw.com/bkwimg/up/16S-8691.mp3" controls="controls">
+        Your browser does not support the audio element.
+    </audio>
+    <canvas id="canvas"></canvas>
+
+</body>
+<script>
+    // 在页面获取音频元素
+    var music = document.getElementById('music')
+    // 在页面获取到canvas元素
+    var canvas = document.getElementById('canvas')
+    // 绑定timeupdate事件(当前播放时间发生改变的时候)
+    music.addEventListener('timeupdate', function () {
+        // 如果音频总时长不为NaN
+        if (!isNaN(music.duration)) {
+            // 用时间比来获取进度条的值
+            var progressValue = music.currentTime / music.duration;
+            // 当播放完成，进度条跳到开始
+            if (progressValue == 1) {
+                progressValue = 0;
+            }
+            // 调用画圈方法
+            drawCircle(canvas, progressValue);
+        };
+    }, false);
+    // 圆形进度条画圈方法
+    drawCircle = (canvas, percentage) => {
+        var clientWidth = document.documentElement.clientWidth;
+
+        var canvasWidth = Math.floor(clientWidth * 200 / 750);
+        // console.log(canvasWidth);
+        var innerR = canvasWidth * 0.8 * 0.5; // 半径
+        console.log(innerR);
+        var ctx;
+        canvas.setAttribute('width', canvasWidth + 'px');
+        canvas.setAttribute('height', canvasWidth + 'px');
+        if (canvas.getContext) {
+            ctx = canvas.getContext('2d');
+        }
+        ctx.translate(canvasWidth / 2, canvasWidth / 2);
+        ctx.beginPath();
+        ctx.arc(0, 0, innerR, 0, Math.PI * 2, false);
+        ctx.lineWidth = 10;
+        ctx.strokeStyle = "transparent";
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(0, 0, innerR, Math.PI * 3 / 2, (Math.PI * 3 / 2 + Math.PI * 2 / 180 + percentage * Math.PI * 2), false);
+        ctx.lineWidth = 10;
+        ctx.strokeStyle = "#323232";
+        ctx.stroke();
+    };
+
+    drawCircle(canvas, 0);
+</script>
+
+</html>
